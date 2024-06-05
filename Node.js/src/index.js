@@ -1,6 +1,6 @@
 const express = require('express');
 const path = require('path');
-const bcrypt = require('bcrypt');
+// const bcrypt = require('bcrypt');
 const collection = require('./config');
 const http = require('http');
 
@@ -28,7 +28,7 @@ app.get("/signup", (req, res) => {
 app.post("/signup", async (req, res) => {
     const data = {
         name: req.body.username,
-        password: await bcrypt.hash(req.body.password, 10)
+        password: req.body.password //await bcrypt.hash(req.body.password, 10)
     };
 
     // check if the user already exist
