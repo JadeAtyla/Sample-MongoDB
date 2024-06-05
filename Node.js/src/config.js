@@ -1,11 +1,11 @@
 const mongoose = require('mongoose')
 // const connect = mongoose.connect("mongodb://localhost:27017/account")
-const connect = mongoose.connect("mongodb+srv://jamadigal:FBY0YLh9RuDHobfL@cluster0.seva5ff.mongodb.net/school")
+const connect = mongoose.connect("mongodb+srv://user5000:ayllaview44@cluster0.czkfeze.mongodb.net/school")
 
 connect.then(() => {
     console.log("Database Connected.");
-}).catch(() => {
-    console.log("Connection error in Database.");
+}).catch((err) => {
+    console.log("Connection error in Database.", err);
 })
 
 // Create a Schema 
@@ -21,6 +21,6 @@ const LoginSchema = new  mongoose.Schema({
 });
 
 // Collection Part 
-const collection = new mongoose.model("Student", LoginSchema);
+const collection = new mongoose.model("students", LoginSchema);
 
 module.exports = collection;
