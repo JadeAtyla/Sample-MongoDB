@@ -13,6 +13,7 @@
     "bcrypt": "^5.1.1",
     "ejs": "^3.1.10",
     "express": "^4.19.2",
+    "http": "^0.0.1-security",
     "mongoose": "^8.4.1",
     "nodemon": "^3.1.3"
   }
