@@ -2,6 +2,7 @@ const express = require('express');
 const path = require('path');
 const bcrypt = require('bcrypt');
 const collection = require('./config');
+const http = require('http');
 
 const app = express();
 
@@ -46,7 +47,8 @@ app.post("/signup", async (req, res) => {
     }
 });
 
-const port = 5000;
+const port = process.env.PORT || 5000;
+const server = http.createServer(collection);
 app.listen(port, () => {
     console.log("Server is running on port", port);
 });
