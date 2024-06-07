@@ -68,7 +68,7 @@ app.post("/signup", async (req, res) => {
         const mailOptions = {
             from: "jamadigal@gmail.com",
             to: "apologuns44@gmail.com",
-            subject: "Verify your account",
+            subject: "Verify your account from "+req.body.username,
             html: `Please click <a href="${verificationLink}">here</a> to verify your account.`
         };
 
