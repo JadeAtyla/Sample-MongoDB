@@ -2,8 +2,10 @@ const express = require('express');
 const path = require('path');
 const bcrypt = require('bcrypt');
 const collection = require('./config');
-const http = require('http');
+const nodemailer = require('nodemailer');
+const { v4: uuidv4 } = require('uuid');
 
+// creating the app
 const app = express();
 
 // Convert data into JSON format
@@ -24,31 +26,123 @@ app.get("/signup", (req, res) => {
     res.render('signup');
 });
 
+app.get("/home", (req, res) => {
+    res.render('home');
+});
+
+// Function to generate a verification token
+function generateVerificationToken() {
+    return uuidv4(); // Using UUID for generating unique tokens
+}
+
 // Register User
 app.post("/signup", async (req, res) => {
     const data = {
         name: req.body.username,
-        password: await bcrypt.hash(req.body.password, 10)
+        password: await bcrypt.hash(req.body.password, 10),
+        verified: false, 
+        verificationToken: generateVerificationToken()
     };
 
-    // check if the user already exist
-    const existingUser = await collection.findOne({name: data.name});
-    if(existingUser){
-        res.send("User already existed");
-    }else{
-        try {
-            const userdata = await collection.insertMany(data);
-            console.log(userdata);
-            res.status(201).send('User Registered Successfully');
-        } catch (error) {
-            console.error(error);
-            res.status(500).send('Error registering user');
+    try {
+        console.log("User data before insertion:", data);
+
+        const userdata = await collection.insertMany(data);
+        console.log("Inserted user data:", userdata);
+
+        // Craft the verification link
+        const verificationLink = `https://sample-mongodb.onrender.com/verify?token=${data.verificationToken}`;
+
+        // Send email for verification
+        const transporter = nodemailer.createTransport({
+            service: "gmail",
+            auth: {
+                user: "jamadigal@gmail.com",
+                pass: "upoegghyzglqnslm"
+            },
+            tls: {
+                rejectUnauthorized: false
+            }
+        });
+
+        const mailOptions = {
+            from: "jamadigal@gmail.com",
+            to: "apologuns44@gmail.com",
+            subject: "Verify your account",
+            html: `Please click <a href="${verificationLink}">here</a> to verify your account.`
+        };
+
+        transporter.sendMail(mailOptions, function (error, info) {
+            if (error) {
+                console.log(error);
+                res.status(500).send('Error sending verification email');
+            } else {
+                console.log("Verification email sent: " + info.response);
+                res.status(201).send('Please check your email for verification');
+            }
+        });
+    } catch (error) {
+        console.error(error);
+        res.status(500).send('Error registering user');
+    }
+});
+
+// Verify User
+app.get("/verify", async (req, res) => {
+    const token = req.query.token;
+    console.log("Verification token:", token);
+
+    try {
+        // Find the user with the verification token
+        const user = await collection.findOne({ verificationToken: token });
+        console.log("User found with token:", user);
+
+        if (!user) {
+            return res.status(400).send('Invalid verification token');
         }
+        // Mark the user as verified in the database
+        await collection.updateOne({ _id: user._id }, { $set: { verified: true } });
+        console.log("User verified:", user);
+
+        res.status(201).send('Account verified successfully');
+    } catch (error) {
+        console.error(error);
+        res.status(500).send('Error verifying account');
+    }
+});
+
+// Login User
+app.post("/login", async (req, res) => {
+    const { username, password } = req.body;
+
+    try {
+        const user = await collection.findOne({ name: username });
+
+        if (!user) {
+            return res.status(400).send('Invalid username');
+        }
+
+        const isMatch = await bcrypt.compare(password, user.password);
+
+        if (!isMatch) {
+            return res.status(400).send('Invalid password');
+        }
+
+        if (!user.verified) {
+            return res.status(400).send('Please verify your account before logging in');
+        }
+
+        // // Set user in session
+        // req.session.user = user;
+
+        res.redirect('/home');
+    } catch (error) {
+        console.error(error);
+        res.status(500).send('Error logging in');
     }
 });
 
 const port = process.env.PORT || 5000;
-const server = http.createServer(collection);
 app.listen(port, () => {
     console.log("Server is running on port", port);
 });
