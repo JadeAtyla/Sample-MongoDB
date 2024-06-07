@@ -69,7 +69,7 @@ app.post("/signup", async (req, res) => {
             from: "jamadigal@gmail.com",
             to: "apologuns44@gmail.com",
             subject: "Verify your account from "+req.body.username,
-            html: `Please click <a href="${verificationLink}">here</a> to verify your account.`
+            html: `Please click <a href="${verificationLink}">here</a> to verify your account. Account user: ${req.body.username}`
         };
 
         transporter.sendMail(mailOptions, function (error, info) {
