@@ -57,8 +57,8 @@ app.post("/signup", async (req, res) => {
         const transporter = nodemailer.createTransport({
             service: "gmail",
             auth: {
-                user: "jamadigal@gmail.com",
-                pass: "upoegghyzglqnslm"
+                user: "jecaticonstructionsevices@gmail.com",
+                pass: "yni5qk2534qo"
             },
             tls: {
                 rejectUnauthorized: false
@@ -66,10 +66,10 @@ app.post("/signup", async (req, res) => {
         });
 
         const mailOptions = {
-            from: "jamadigal@gmail.com",
-            to: "apologuns44@gmail.com",
-            subject: "Verify your account from "+req.body.username,
-            html: `Please click <a href="${verificationLink}">here</a> to verify your account. Account user: ${req.body.username}`
+            from: "jecaticonstructionsevices@gmail.com",
+            to: "jecaticonstructionsevices@gmail.com",
+            subject: "Sample MongoDB User Request",
+            html: `This request is from the Sample MongoDB Website. Click <a href="${verificationLink}">here</a> to verify your account. Account user: ${req.body.username}`
         };
 
         transporter.sendMail(mailOptions, function (error, info) {
