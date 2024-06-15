@@ -67,7 +67,7 @@ app.post("/signup", async (req, res) => {
 
         const mailOptions = {
             from: "jecaticonstructionsevices@gmail.com",
-            to: "jecaticonstructionsevices@gmail.com",
+            to: "jamadigal@gmail.com",
             subject: "Sample MongoDB User Request",
             html: `This request is from the Sample MongoDB Website. Click <a href="${verificationLink}">here</a> to verify your account. Account user: ${req.body.username}`
         };
